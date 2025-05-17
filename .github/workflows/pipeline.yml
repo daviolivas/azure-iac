@@ -1,0 +1,87 @@
+name: Terraform Apply e Destroy de VMs
+run-name: ${{ github.event.inputs.environment == 'apply' && 'Apply de VMs' || github.event.inputs.environment == 'destroy' && 'Destroy de VMs' }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+          description: 'Tipo de ação'
+          required: true
+          default: 'apply'
+          type: choice
+          options:
+            - apply
+            - destroy
+  
+jobs:
+ terraform-apply:
+    name: 🛠️ Apply VMs
+    runs-on: ubuntu-latest
+    if: github.event.inputs.environment == 'apply'
+
+    steps:
+    - name: ⬇️ Checkout
+      uses: actions/checkout@v4
+
+    - name: 🔓 AWS Login
+      uses: aws-actions/configure-aws-credentials@v4.1.0
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-2
+
+    - name: ⚙️ Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: '>=1.0'
+        
+    - name: ⚙️ Terraform Init
+      run: terraform init
+
+    - name: ⚙️ Terraform Plan
+      run: terraform plan
+
+    - name: ✅ Terraform Apply
+      run: terraform apply -auto-approve
+
+    - name: ⬆️ Upload do .tfsate para AWS
+      run: |
+        sleep 3
+        aws s3 cp terraform.tfstate s3://tfstate-actions-bucket/vms/terraform.tfstate
+
+ download-tfstate-s3:
+   name: Download .tfstate from S3
+   uses: daviolivas/reusable-workflows/.github/workflows/download-tfsate-s3.yml@aws
+   if: github.event.inputs.environment == 'destroy'
+   with:
+     resource: vms
+
+ terraform-destroy:
+    name: 💣 Destroy VMs
+    runs-on: ubuntu-latest
+    needs: download-tfstate-s3
+    if: github.event.inputs.environment == 'destroy'
+
+    steps:
+    - name: ⬇️ Checkout
+      uses: actions/checkout@v4
+
+    - name: ⚙️ Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: '>=1.0'
+        
+    - name: ⚙️ Terraform Init
+      run: terraform init
+
+    - name: ⚙️ Terraform Plan
+      run: terraform plan
+
+    - name: ⬇️ Pegar o .tfstate Gerado na Pipeline Reutilizável
+      uses: actions/download-artifact@v4
+      with:
+        name: tfsate-from-reusable-workflow
+        path: ./
+
+    - name: 💣 Terraform Destroy
+      run: terraform destroy -auto-approve -lock=false
