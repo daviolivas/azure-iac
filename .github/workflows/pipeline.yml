@@ -55,7 +55,7 @@ jobs:
 
  download-tfstate-s3:
    name: Download .tfstate from S3
-   uses: daviolivas/reusable-workflows/.github/workflows/download-tfsate-s3.yml@aws
+   uses: daviolivas/reusable-workflows/.github/workflows/download-s3-tfstate.yml@main
    if: github.event.inputs.environment == 'destroy'
    with:
      resource: vms
