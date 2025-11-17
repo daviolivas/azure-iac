@@ -45,7 +45,9 @@ jobs:
       run: terraform init
 
     - name: ⚙️ Terraform Plan
-      run: terraform plan \      
+      run: terraform plan \
+        -var="arm_client_id=${{ secrets.ARM_CLIENT_ID }}" \
+        -var="arm_client_secret=${{ secrets.ARM_CLIENT_SECRET }}" \
 
     - name: ✅ Terraform Apply
       run: terraform apply -auto-approve \
