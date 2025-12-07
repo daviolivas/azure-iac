@@ -71,6 +71,7 @@ jobs:
    if: github.event.inputs.environment == 'destroy'
    with:
      resource: vms
+   secrets: inherit
 
  terraform-destroy:
     name: 💣 Destroy VMs
