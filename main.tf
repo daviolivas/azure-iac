@@ -85,3 +85,10 @@ resource "azurerm_virtual_machine_data_disk_attachment" "disk-attach-2" {
   caching            = "None"
   write_accelerator_enabled = false
 }
+
+## outputs
+
+output "virtual-machine-1-public-ip-address" {
+  value       = azurerm_public_ip.virtual-machine-1-public-ip.ip_address
+  description = "Endereço IP público da máquina virtual"
+}
