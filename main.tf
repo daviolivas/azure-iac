@@ -18,8 +18,8 @@ resource "azurerm_network_interface" "vm1_nic" {
 
 resource "azurerm_public_ip" "virtual-machine-1-public-ip" {
   name                = "test-machine-1-public-ip"
-  location            = azurerm_network_interface.vm1_nic.location
-  resource_group_name = azurerm_network_interface.vm1_nic.resource_group_name
+  location            = "brazilsouth"
+  resource_group_name = "machines"
   allocation_method   = "Static"
   sku                 = "Basic"
 }
@@ -53,7 +53,7 @@ resource "azurerm_linux_virtual_machine" "virtual-machine-1" {
 ## disks
 
 resource "azurerm_managed_disk" "hdd1_lvm" {
-  name                = "thdd1_lvm"
+  name                = "hdd1_lvm"
   location            = "brazilsouth"
   resource_group_name = "disks"
   storage_account_type = "Standard_HDD_LRS" # O tipo mais básico e barato
