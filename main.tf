@@ -71,16 +71,16 @@ resource "azurerm_managed_disk" "hdd2_lvm" {
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "disk-attach-1" {
-  managed_disk_id    = [azurerm_managed_disk.hdd1_lvm.id]
-  virtual_machine_id = [azurerm_linux_virtual_machine.virtual-machine-1.id]
+  managed_disk_id    = azurerm_managed_disk.hdd1_lvm.id
+  virtual_machine_id = azurerm_linux_virtual_machine.virtual-machine-1.id
   lun                = 1
   caching            = "None"
   write_accelerator_enabled = false
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "disk-attach-2" {
-  managed_disk_id    = [azurerm_managed_disk.hdd2_lvm.id]
-  virtual_machine_id = [azurerm_linux_virtual_machine.virtual-machine-1.id]
+  managed_disk_id    = azurerm_managed_disk.hdd2_lvm.id
+  virtual_machine_id = azurerm_linux_virtual_machine.virtual-machine-1.id
   lun                = 2
   caching            = "None"
   write_accelerator_enabled = false
@@ -89,6 +89,6 @@ resource "azurerm_virtual_machine_data_disk_attachment" "disk-attach-2" {
 ## outputs
 
 output "virtual-machine-1-public-ip-address" {
-  value       = [azurerm_public_ip.virtual-machine-1-public-ip.ip_address]
+  value       = azurerm_public_ip.virtual-machine-1-public-ip.ip_address
   description = "Endereço IP público da máquina virtual"
 }
