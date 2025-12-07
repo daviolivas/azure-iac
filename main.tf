@@ -56,7 +56,7 @@ resource "azurerm_managed_disk" "hdd1_lvm" {
   name                = "hdd1_lvm"
   location            = "brazilsouth"
   resource_group_name = "disks"
-  storage_account_type = "Standard_HDD_LRS" # O tipo mais básico e barato
+  storage_account_type = "Standard_LRS" # O tipo mais básico e barato
   create_option        = "Empty"
   disk_size_gb         = 10 # Defina o tamanho desejado (exemplo: 10 GB)
 }
@@ -65,7 +65,7 @@ resource "azurerm_managed_disk" "hdd2_lvm" {
   name                = "hdd2_lvm"
   location            = "brazilsouth"
   resource_group_name = "disks"
-  storage_account_type = "Standard_HDD_LRS" # O tipo mais básico e barato
+  storage_account_type = "Standard_LRS" # O tipo mais básico e barato
   create_option        = "Empty"
   disk_size_gb         = 10 # Defina o tamanho desejado (exemplo: 10 GB)
 }
